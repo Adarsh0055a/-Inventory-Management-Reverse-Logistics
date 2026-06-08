@@ -1,0 +1,610 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.nav { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.nav-btn { font-size: 12px; padding: 5px 12px; border-radius: 20px; border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); cursor: pointer; transition: all .2s; }
+.nav-btn.active, .nav-btn:hover { background: var(--color-background-info); color: var(--color-text-info); border-color: transparent; }
+.section { display: none; }
+.section.active { display: block; }
+.co-badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--color-background-success); color: var(--color-text-success); margin-bottom: 1rem; font-weight: 500; }
+h2 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 0.25rem; }
+h3 { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 0.5rem; }
+.subtitle { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.5rem; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+.metric-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; }
+.metric-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.metric-val { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin: 2px; }
+.tag-blue { background: var(--color-background-info); color: var(--color-text-info); }
+.tag-amber { background: var(--color-background-warning); color: var(--color-text-warning); }
+.tag-red { background: var(--color-background-danger); color: var(--color-text-danger); }
+.tag-green { background: var(--color-background-success); color: var(--color-text-success); }
+.flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 1rem 0; }
+.flow-box { font-size: 12px; padding: 6px 10px; border-radius: 6px; background: var(--color-background-info); color: var(--color-text-info); border: 0.5px solid var(--color-border-tertiary); text-align: center; }
+.flow-arrow { color: var(--color-text-tertiary); font-size: 14px; }
+.method-tabs { display: flex; gap: 6px; margin-bottom: 1rem; }
+.method-tab { font-size: 12px; padding: 5px 12px; border-radius: 6px; border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); cursor: pointer; }
+.method-tab.active { background: var(--color-background-warning); color: var(--color-text-warning); border-color: transparent; }
+.method-content { display: none; }
+.method-content.active { display: block; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { background: var(--color-background-secondary); padding: 8px 10px; text-align: left; font-weight: 500; color: var(--color-text-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+td { padding: 8px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); }
+tr:last-child td { border-bottom: none; }
+.highlight { color: var(--color-text-info); font-weight: 500; }
+.inv-type-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.inv-type { padding: 0.75rem; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); }
+.inv-type .icon { font-size: 24px; margin-bottom: 6px; }
+.inv-type h4 { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+.inv-type p { font-size: 12px; color: var(--color-text-secondary); }
+.triangle-container { display: flex; justify-content: center; margin: 1rem 0; }
+.cost-items { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 1rem; }
+.cost-item { padding: 0.75rem; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); text-align: center; }
+.cost-item .cost-icon { font-size: 20px; margin-bottom: 4px; }
+.cost-item h4 { font-size: 12px; font-weight: 500; margin-bottom: 4px; }
+.cost-item p { font-size: 11px; color: var(--color-text-secondary); }
+.rl-key-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.rl-key { padding: 0.75rem; border-radius: var(--border-radius-md); background: var(--color-background-secondary); }
+.rl-key h4 { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+.rl-key p { font-size: 12px; color: var(--color-text-secondary); }
+.quiz-btn { width: 100%; text-align: left; padding: 0.75rem 1rem; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: transparent; color: var(--color-text-primary); cursor: pointer; font-size: 13px; margin-bottom: 8px; transition: all .2s; }
+.quiz-btn:hover { background: var(--color-background-secondary); }
+.quiz-btn.correct { background: var(--color-background-success); color: var(--color-text-success); border-color: transparent; }
+.quiz-btn.wrong { background: var(--color-background-danger); color: var(--color-text-danger); border-color: transparent; }
+.quiz-feedback { font-size: 13px; padding: 0.75rem; border-radius: var(--border-radius-md); margin-top: 0.5rem; display: none; }
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok { background: var(--color-background-success); color: var(--color-text-success); }
+.quiz-feedback.no { background: var(--color-background-danger); color: var(--color-text-danger); }
+.eoq-result { margin-top: 1rem; padding: 1rem; background: var(--color-background-secondary); border-radius: var(--border-radius-md); }
+.formula { font-family: var(--font-mono); font-size: 13px; background: var(--color-background-secondary); padding: 8px 12px; border-radius: var(--border-radius-md); margin: 0.5rem 0; }
+.push-pull { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 1rem 0; }
+.push-card { padding: 1rem; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); }
+.push-card.push { border-left: 3px solid #E24B4A; }
+.push-card.pull { border-left: 3px solid #1D9E75; }
+.push-card h4 { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+.push-card ul { font-size: 12px; color: var(--color-text-secondary); padding-left: 14px; }
+.push-card li { margin-bottom: 4px; }
+.service-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.service-label { font-size: 12px; color: var(--color-text-secondary); width: 120px; flex-shrink: 0; }
+.service-track { flex: 1; height: 8px; border-radius: 4px; background: var(--color-background-secondary); overflow: hidden; }
+.service-fill { height: 100%; border-radius: 4px; background: var(--color-background-info); transition: width 1s ease; }
+.service-pct { font-size: 12px; font-weight: 500; color: var(--color-text-info); width: 36px; text-align: right; }
+</style>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="show('intro')">Overview</button>
+  <button class="nav-btn" onclick="show('appraisal')">Inventory Appraisal</button>
+  <button class="nav-btn" onclick="show('types')">Types & Problems</button>
+  <button class="nav-btn" onclick="show('objectives')">Objectives</button>
+  <button class="nav-btn" onclick="show('pull')">Pull Control & JIT</button>
+  <button class="nav-btn" onclick="show('pipeline')">Pipeline Inventory</button>
+  <button class="nav-btn" onclick="show('reverse')">Reverse Logistics</button>
+  <button class="nav-btn" onclick="show('quiz')">MCQ Quiz</button>
+</div>
+
+<!-- INTRO -->
+<div id="intro" class="section active">
+  <div class="co-badge">CO3 — Inventory & Reverse Logistics</div>
+  <h2>Unit 3: Inventory Management & Reverse Logistics</h2>
+  <p class="subtitle">MBA Supply Chain Management · Click any topic in the nav bar above to begin</p>
+  <div class="card-grid">
+    <div class="metric-card"><div class="metric-label">Topics in this unit</div><div class="metric-val">8</div></div>
+    <div class="metric-card"><div class="metric-label">MCQ questions</div><div class="metric-val">5</div></div>
+    <div class="metric-card"><div class="metric-label">Case examples</div><div class="metric-val">10+</div></div>
+  </div>
+  <div class="card">
+    <h3>What you will learn</h3>
+    <div style="margin-top: 0.75rem; display: flex; flex-direction: column; gap: 8px;">
+      <div style="display: flex; gap: 10px; align-items: flex-start;"><span class="tag tag-blue">Part A</span><span style="font-size: 13px;">Inventory management: appraisal methods (FIFO/LIFO/WA), types of inventory, classification of problems, objectives (cost triangle + service levels), pull control (JIT/Kanban), and pipeline inventory</span></div>
+      <div style="display: flex; gap: 10px; align-items: flex-start;"><span class="tag tag-green">Part B</span><span style="font-size: 13px;">Reverse logistics: definition, scope, system design considerations, and strategic use as a competitive tool</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Inventory in the supply chain</h3>
+    <div class="flow">
+      <div class="flow-box">Supplier<br><span style="font-size:10px">Raw Materials</span></div>
+      <div class="flow-arrow">▶</div>
+      <div class="flow-box">Manufacturer<br><span style="font-size:10px">WIP + RM</span></div>
+      <div class="flow-arrow">▶</div>
+      <div class="flow-box">Warehouse<br><span style="font-size:10px">Finished Goods</span></div>
+      <div class="flow-arrow">▶</div>
+      <div class="flow-box">Retailer<br><span style="font-size:10px">Shelf Stock</span></div>
+      <div class="flow-arrow">▶</div>
+      <div class="flow-box">Customer<br><span style="font-size:10px">Demand</span></div>
+    </div>
+    <p style="font-size: 12px; color: var(--color-text-secondary);">Example: Maruti Suzuki holds raw steel → parts in assembly → finished cars in yards → at dealers. Each stage holds inventory for different reasons.</p>
+  </div>
+</div>
+
+<!-- APPRAISAL -->
+<div id="appraisal" class="section">
+  <div class="co-badge">CO3 — Appraisal of Inventories</div>
+  <h2>Appraisal of Inventories</h2>
+  <p class="subtitle">Valuation method affects COGS, Gross Profit & Income Tax</p>
+  <div class="method-tabs">
+    <button class="method-tab active" onclick="showMethod('fifo')">FIFO</button>
+    <button class="method-tab" onclick="showMethod('lifo')">LIFO</button>
+    <button class="method-tab" onclick="showMethod('wa')">Weighted Average</button>
+    <button class="method-tab" onclick="showMethod('compare')">Comparison</button>
+  </div>
+  <div id="fifo" class="method-content active">
+    <div class="card">
+      <h3>FIFO — First In, First Out</h3>
+      <p style="font-size:13px; color: var(--color-text-secondary); margin-bottom: 0.75rem;">Oldest stock is sold first. Ending inventory reflects the most recent (higher) prices.</p>
+      <div style="display: flex; gap: 8px; margin-bottom: 0.75rem;"><span class="tag tag-green">Best for: Perishables</span><span class="tag tag-blue">Allowed: IFRS & US GAAP</span></div>
+      <p style="font-size: 13px;"><strong>During inflation:</strong> Lower COGS → Higher Gross Profit → Higher Tax liability</p>
+      <p style="font-size: 12px; color: var(--color-text-secondary); margin-top: 6px;">Example: Supermarkets (bread, milk) — older stock must be sold before expiry</p>
+    </div>
+  </div>
+  <div id="lifo" class="method-content">
+    <div class="card">
+      <h3>LIFO — Last In, First Out</h3>
+      <p style="font-size:13px; color: var(--color-text-secondary); margin-bottom: 0.75rem;">Newest stock is sold first. Results in higher COGS during inflation → lower reported profit.</p>
+      <div style="display: flex; gap: 8px; margin-bottom: 0.75rem;"><span class="tag tag-amber">US GAAP only</span><span class="tag tag-red">NOT allowed under IFRS</span></div>
+      <p style="font-size: 13px;"><strong>During inflation:</strong> Higher COGS → Lower Gross Profit → Lower Tax liability</p>
+      <p style="font-size: 12px; color: var(--color-text-secondary); margin-top: 6px;">Example: Oil companies in the US — newer oil purchased at higher prices sold first</p>
+    </div>
+  </div>
+  <div id="wa" class="method-content">
+    <div class="card">
+      <h3>Weighted Average Cost (WAC)</h3>
+      <p style="font-size:13px; color: var(--color-text-secondary); margin-bottom: 0.75rem;">Average cost of all units available. Smooths price fluctuations across purchases.</p>
+      <div style="display: flex; gap: 8px; margin-bottom: 0.75rem;"><span class="tag tag-blue">Widely used</span><span class="tag tag-green">Allowed: IFRS & GAAP</span></div>
+      <div class="formula">WAC per unit = Total Cost ÷ Total Units</div>
+      <p style="font-size: 12px; color: var(--color-text-secondary);">Example: Manufacturing & Chemical industries where units are interchangeable</p>
+    </div>
+  </div>
+  <div id="compare" class="method-content">
+    <div class="card">
+      <h3>Numerical Example: Same stock, 3 different answers</h3>
+      <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 0.75rem;">Company buys 3 batches of 100 units each, then sells 200 units</p>
+      <table>
+        <thead><tr><th>Batch</th><th>Units</th><th>Cost/Unit</th><th>Total</th></tr></thead>
+        <tbody>
+          <tr><td>Batch 1 (Jan)</td><td>100</td><td>₹10</td><td>₹1,000</td></tr>
+          <tr><td>Batch 2 (Feb)</td><td>100</td><td>₹12</td><td>₹1,200</td></tr>
+          <tr><td>Batch 3 (Mar)</td><td>100</td><td>₹15</td><td>₹1,500</td></tr>
+          <tr><td style="font-weight:500">TOTAL</td><td>300</td><td>—</td><td>₹3,700</td></tr>
+        </tbody>
+      </table>
+      <table style="margin-top: 1rem;">
+        <thead><tr><th>Method</th><th>COGS (200 units)</th><th>Closing Stock</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td>FIFO</td><td class="highlight">₹2,200</td><td>₹1,500</td><td><span class="tag tag-green">Lowest COGS</span></td></tr>
+          <tr><td>LIFO</td><td class="highlight">₹2,700</td><td>₹1,000</td><td><span class="tag tag-red">Highest COGS</span></td></tr>
+          <tr><td>Weighted Avg.</td><td class="highlight">₹2,467</td><td>₹1,233</td><td><span class="tag tag-blue">Middle ground</span></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12px; color: var(--color-text-warning); margin-top: 0.75rem; padding: 8px; border-radius: 6px; background: var(--color-background-warning);">Key insight: Same physical inventory — 3 different profit figures! Valuation is a management decision, not just accounting.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TYPES -->
+<div id="types" class="section">
+  <div class="co-badge">CO3 — Types & Classification</div>
+  <h2>Types of Inventories & Problem Classification</h2>
+  <p class="subtitle">Understanding what you hold and how to model it</p>
+  <div class="card">
+    <h3>The 4 Types of Inventory</h3>
+    <div class="inv-type-grid" style="margin-top: 0.75rem;">
+      <div class="inv-type" style="background: var(--color-background-info);">
+        <div class="icon">🏭</div>
+        <h4>Raw Materials</h4>
+        <p>Inputs not yet processed. Held to ensure uninterrupted production.<br><em>E.g., Steel coils at Maruti Suzuki, Cotton bales at Arvind Mills</em></p>
+      </div>
+      <div class="inv-type" style="background: var(--color-background-warning);">
+        <div class="icon">⚙️</div>
+        <h4>Work-in-Progress (WIP)</h4>
+        <p>Partially processed goods on the production floor.<br><em>E.g., Half-assembled cars on conveyor belt</em></p>
+      </div>
+      <div class="inv-type" style="background: var(--color-background-success);">
+        <div class="icon">📦</div>
+        <h4>Finished Goods</h4>
+        <p>Ready for sale. Held at warehouse or retail outlet.<br><em>E.g., iPhones in Apple Store, Maggi noodles at supermarket</em></p>
+      </div>
+      <div class="inv-type" style="background: var(--color-background-secondary);">
+        <div class="icon">🔧</div>
+        <h4>MRO Inventory</h4>
+        <p>Maintenance, Repair & Operations supplies. Don't go into product but essential for ops.<br><em>E.g., Lubricants, spare machine parts</em></p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Classifying Inventory Management Problems</h3>
+    <div style="margin-top: 0.75rem; display: flex; flex-direction: column; gap: 10px;">
+      <div>
+        <p style="font-size:13px; font-weight:500; margin-bottom:4px;">1. By Demand Certainty</p>
+        <div style="display:flex; gap: 8px;">
+          <div style="flex:1; padding: 0.6rem; border-radius: 6px; border: 0.5px solid var(--color-border-tertiary); font-size:12px;"><strong>Deterministic</strong><br>Demand & lead time are known with certainty. Simpler models (EOQ). No safety stock needed.<br><span style="color: var(--color-text-secondary);">E.g., Newspaper delivery with fixed daily orders</span></div>
+          <div style="flex:1; padding: 0.6rem; border-radius: 6px; border: 0.5px solid var(--color-border-tertiary); font-size:12px;"><strong>Probabilistic</strong><br>Demand or lead time are uncertain. Uses statistical models. Safety stock required.<br><span style="color: var(--color-text-secondary);">E.g., Amazon on Diwali — uses historical data + safety stock</span></div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:13px; font-weight:500; margin-bottom:4px;">2. By Planning Horizon</p>
+        <div style="display:flex; gap: 8px;">
+          <div style="flex:1; padding: 0.6rem; border-radius: 6px; border: 0.5px solid var(--color-border-tertiary); font-size:12px;"><strong>Single-Period Model</strong><br>Order once, cannot reorder. Unsold = loss. Common for perishable/seasonal goods.<br><span style="color: var(--color-text-secondary);">E.g., Bakeries, festival season fashion</span></div>
+          <div style="flex:1; padding: 0.6rem; border-radius: 6px; border: 0.5px solid var(--color-border-tertiary); font-size:12px;"><strong>Multi-Period Model</strong><br>Replenish repeatedly over time. Fixed Order Quantity (ROP) or Fixed Order Interval.<br><span style="color: var(--color-text-secondary);">E.g., Grocery store, manufacturing plant</span></div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:13px; font-weight:500; margin-bottom:4px;">3. By Demand Dependency</p>
+        <div style="display:flex; gap: 8px;">
+          <div style="flex:1; padding: 0.6rem; border-radius: 6px; border: 0.5px solid var(--color-border-tertiary); font-size:12px;"><strong>Independent Demand</strong><br>Driven by external market forces. Forecasting required. Managed using EOQ, ROP models.<br><span style="color: var(--color-text-secondary);">E.g., Customer buying a refrigerator</span></div>
+          <div style="flex:1; padding: 0.6rem; border-radius: 6px; border: 0.5px solid var(--color-border-tertiary); font-size:12px;"><strong>Dependent Demand</strong><br>Derived from demand for parent item. Calculated, not forecasted. Managed using MRP.<br><span style="color: var(--color-text-secondary);">E.g., Compressor demand = refrigerator demand</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OBJECTIVES -->
+<div id="objectives" class="section">
+  <div class="co-badge">CO3 — Inventory Objectives</div>
+  <h2>Inventory Objectives</h2>
+  <p class="subtitle">Balancing the cost triangle while meeting service level targets</p>
+  <div class="card">
+    <h3>The Three-Cost Triangle</h3>
+    <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1rem;">Goal: Minimize Total Cost = Ordering Cost + Holding Cost + Shortage Cost</p>
+    <div class="cost-items">
+      <div class="cost-item" style="border-top: 3px solid #EF9F27;">
+        <div class="cost-icon">📋</div>
+        <h4>Ordering Cost</h4>
+        <p>Admin, transport, receiving per order placed. Larger lots = lower ordering cost but higher holding cost.</p>
+      </div>
+      <div class="cost-item" style="border-top: 3px solid #378ADD;">
+        <div class="cost-icon">🏢</div>
+        <h4>Holding Cost</h4>
+        <p>Warehouse rent, insurance, spoilage, obsolescence, capital cost. Typically <strong>20–30%</strong> of inventory value per year.</p>
+      </div>
+      <div class="cost-item" style="border-top: 3px solid #E24B4A;">
+        <div class="cost-icon">⚠️</div>
+        <h4>Shortage Cost</h4>
+        <p>Lost sales, customer dissatisfaction, emergency procurement. Often the most damaging.</p>
+        <p style="font-size: 11px; margin-top: 4px; color: var(--color-text-danger);">E.g., Stockout at Zomato = cancelled order + negative review</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>EOQ Calculator — Economic Order Quantity</h3>
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 0.75rem;">Finds the optimal order quantity that minimizes total ordering + holding costs</p>
+    <div class="formula">EOQ = √( 2 × D × S ÷ H )</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 0.75rem;">
+      <div><label style="font-size:12px; color:var(--color-text-secondary);">Annual Demand (D)</label><input type="number" id="eoq-d" value="1000" style="width:100%; margin-top:4px"></div>
+      <div><label style="font-size:12px; color:var(--color-text-secondary);">Ordering Cost (S) ₹</label><input type="number" id="eoq-s" value="200" style="width:100%; margin-top:4px"></div>
+      <div><label style="font-size:12px; color:var(--color-text-secondary);">Holding Cost/unit (H) ₹</label><input type="number" id="eoq-h" value="50" style="width:100%; margin-top:4px"></div>
+    </div>
+    <button onclick="calcEOQ()" style="margin-top:0.75rem; padding: 6px 16px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-primary); cursor: pointer;">Calculate EOQ ↗</button>
+    <div class="eoq-result" id="eoq-result" style="display:none"></div>
+  </div>
+  <div class="card">
+    <h3>Service Level Targets by Industry</h3>
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 1rem;">Probability of NOT facing a stockout during replenishment period</p>
+    <div class="service-bar"><div class="service-label">Basic Retail</div><div class="service-track"><div class="service-fill" style="width:90%"></div></div><div class="service-pct">90%</div></div>
+    <div class="service-bar"><div class="service-label">FMCG / Grocery</div><div class="service-track"><div class="service-fill" style="width:95%"></div></div><div class="service-pct">95%</div></div>
+    <div class="service-bar"><div class="service-label">Hospital / Pharma</div><div class="service-track"><div class="service-fill" style="width:99%"></div></div><div class="service-pct">99%</div></div>
+    <div class="service-bar"><div class="service-label">Aviation / Defence</div><div class="service-track"><div class="service-fill" style="width:99.9%"></div></div><div class="service-pct">99.9%</div></div>
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin-top: 0.75rem;">Case: Flipkart Big Billion Days — pre-stocks high-demand SKUs to 99%+ service level; niche items at 90%</p>
+  </div>
+</div>
+
+<!-- PULL -->
+<div id="pull" class="section">
+  <div class="co-badge">CO3 — Pull Inventory Control</div>
+  <h2>Basic Model of Pull Inventory Control</h2>
+  <p class="subtitle">Letting actual customer demand drive the supply chain</p>
+  <div class="push-pull">
+    <div class="push-card push">
+      <h4>⬆ PUSH System</h4>
+      <ul>
+        <li>Forecast-driven production</li>
+        <li>Produce in advance, store till needed</li>
+        <li>High inventory buffers</li>
+        <li>Risk: Overproduction & obsolescence</li>
+        <li><em>E.g., Traditional auto factories, FMCG</em></li>
+      </ul>
+    </div>
+    <div class="push-card pull">
+      <h4>⬇ PULL System</h4>
+      <ul>
+        <li>Actual demand triggers production</li>
+        <li>Produce only when ordered</li>
+        <li>Minimal/zero inventory</li>
+        <li>Risk: Stockout if demand spikes</li>
+        <li><em>E.g., Toyota JIT, Dell made-to-order</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Just-in-Time (JIT): The Pull System in Action</h3>
+    <p style="font-size:13px; color: var(--color-text-secondary); margin-bottom: 0.75rem;"><em>Receive goods only as they are needed, in the right quantity, at the right time</em></p>
+    <div style="padding: 0.75rem; border-radius: var(--border-radius-md); background: var(--color-background-info); margin-bottom: 0.75rem;">
+      <p style="font-size: 13px; font-weight: 500; margin-bottom: 6px;">Case Study: Toyota Production System (TPS)</p>
+      <ul style="font-size: 12px; color: var(--color-text-secondary); padding-left: 16px;">
+        <li>Toyota pioneered JIT in the 1970s with the Kanban (signboard) system</li>
+        <li>Parts arrive from suppliers hours before needed — not days or weeks</li>
+        <li>Factory carries &lt; 2 hours of component inventory at any time</li>
+        <li style="color: var(--color-text-success);">Result: Inventory cost slashed by 75%, defect detection immediate</li>
+        <li style="color: var(--color-text-danger);">Risk revealed: 2011 Japan Tsunami disrupted suppliers → Toyota halted global production</li>
+      </ul>
+    </div>
+    <div class="card-grid">
+      <div class="metric-card"><div class="metric-label">JIT benefit</div><div class="metric-val" style="font-size:14px;">Zero waste (Muda)</div></div>
+      <div class="metric-card"><div class="metric-label">JIT benefit</div><div class="metric-val" style="font-size:14px;">Reduced holding cost</div></div>
+      <div class="metric-card"><div class="metric-label">JIT benefit</div><div class="metric-val" style="font-size:14px;">Faster defect detection</div></div>
+    </div>
+    <div style="margin-top: 0.75rem; padding: 0.75rem; border-radius: var(--border-radius-md); background: var(--color-background-warning);">
+      <p style="font-size: 12px; color: var(--color-text-warning);">COVID-19 exposed JIT vulnerability globally. Consider hybrid "Just-in-Case" strategies for critical items — balancing resilience vs. cost.</p>
+    </div>
+  </div>
+</div>
+
+<!-- PIPELINE -->
+<div id="pipeline" class="section">
+  <div class="co-badge">CO3 — Pipeline Inventories</div>
+  <h2>Pipeline Inventories & Lead Time</h2>
+  <p class="subtitle">Stock that is ordered and in transit, but not yet available for use</p>
+  <div class="card">
+    <h3>Formula</h3>
+    <div class="formula">Pipeline Inventory = Average Demand per day × Lead Time (days)</div>
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin-top: 0.5rem;">More lead time = more capital tied up in goods that are "at sea" and unavailable for sale</p>
+  </div>
+  <div class="card">
+    <h3>Pipeline Inventory Calculator</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 0.75rem;">
+      <div><label style="font-size:12px; color:var(--color-text-secondary);">Daily demand (units/day)</label><input type="number" id="pipe-d" value="500" style="width:100%; margin-top:4px" oninput="calcPipeline()"></div>
+      <div><label style="font-size:12px; color:var(--color-text-secondary);">Lead time (days)</label><input type="number" id="pipe-l" value="25" style="width:100%; margin-top:4px" oninput="calcPipeline()"></div>
+    </div>
+    <div class="eoq-result" id="pipe-result" style="margin-top: 0.75rem;">
+      <p style="font-size: 14px; font-weight: 500;">Pipeline Inventory: <span id="pipe-val" style="color: var(--color-text-info);">12,500 units</span></p>
+      <p style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">This is the number of units always in transit</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Zara Case: Sea vs Air Freight</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 0.75rem;">
+      <div style="padding: 0.75rem; border-radius: 6px; border: 0.5px solid var(--color-border-tertiary);">
+        <p style="font-size: 12px; font-weight: 500; margin-bottom: 4px;">🚢 Sea Freight (25 days)</p>
+        <p style="font-size: 20px; font-weight: 500; color: var(--color-text-danger);">12,500 units</p>
+        <p style="font-size: 11px; color: var(--color-text-secondary);">500 units/day × 25 days</p>
+        <p style="font-size: 11px; margin-top: 4px; color: var(--color-text-success);">Lower freight cost</p>
+      </div>
+      <div style="padding: 0.75rem; border-radius: 6px; border: 0.5px solid var(--color-border-tertiary);">
+        <p style="font-size: 12px; font-weight: 500; margin-bottom: 4px;">✈ Air Freight (3 days)</p>
+        <p style="font-size: 20px; font-weight: 500; color: var(--color-text-success);">1,500 units</p>
+        <p style="font-size: 11px; color: var(--color-text-secondary);">500 units/day × 3 days</p>
+        <p style="font-size: 11px; margin-top: 4px; color: var(--color-text-danger);">Higher freight cost</p>
+      </div>
+    </div>
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin-top: 0.75rem;">Real example: Suez Canal Blockage (2021) — Ever Given blocked the canal for 6 days, causing pipeline inventories to balloon and shortages across Europe.</p>
+  </div>
+</div>
+
+<!-- REVERSE LOGISTICS -->
+<div id="reverse" class="section">
+  <div class="co-badge">CO3 — Reverse Logistics</div>
+  <h2>Reverse Logistics</h2>
+  <p class="subtitle">The "other direction" of supply chain — from consumer back to origin</p>
+  <div class="card">
+    <h3>Definition & Scope</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0.75rem 0;">
+      <div style="padding: 0.75rem; border-radius: 6px; background: var(--color-background-info);">
+        <p style="font-size: 11px; font-weight: 500; margin-bottom: 4px; color: var(--color-text-secondary);">FORWARD LOGISTICS</p>
+        <p style="font-size: 12px;">Flow of goods from <strong>point of origin → point of consumption</strong> for conforming to customer requirements</p>
+        <div class="flow" style="margin: 6px 0; font-size: 11px;">
+          <div class="flow-box" style="font-size:11px;">Origin</div><div class="flow-arrow">→</div><div class="flow-box" style="font-size:11px;">Customer</div>
+        </div>
+      </div>
+      <div style="padding: 0.75rem; border-radius: 6px; background: var(--color-background-success);">
+        <p style="font-size: 11px; font-weight: 500; margin-bottom: 4px; color: var(--color-text-secondary);">REVERSE LOGISTICS</p>
+        <p style="font-size: 12px;">Flow of goods from <strong>point of consumption → point of origin</strong> for recapturing value or proper disposal</p>
+        <div class="flow" style="margin: 6px 0; font-size: 11px;">
+          <div class="flow-box" style="font-size:11px; background:var(--color-background-success); color: var(--color-text-success);">Customer</div><div class="flow-arrow">→</div><div class="flow-box" style="font-size:11px; background:var(--color-background-success); color: var(--color-text-success);">Origin</div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size: 12px; color: var(--color-text-secondary);">Source: Rogers and Tibben-Lembke, "Going Backwards: Reverse Logistics Trends and Practices," 1998</p>
+  </div>
+  <div class="card">
+    <h3>Scope of Reverse Logistics Activities</h3>
+    <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.75rem;">
+      <span class="tag tag-blue">Handling returned merchandise</span>
+      <span class="tag tag-blue">Seasonal inventory management</span>
+      <span class="tag tag-blue">Resell via outlet</span>
+      <span class="tag tag-amber">Recycling & reuse</span>
+      <span class="tag tag-amber">Material reuse</span>
+      <span class="tag tag-green">Remanufacturing / refurbishing</span>
+      <span class="tag tag-green">Cannibalization</span>
+      <span class="tag tag-red">Hazardous materials disposition</span>
+      <span class="tag tag-red">Stock-balancing returns</span>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Strategic Use: Reverse Logistics as a Competitive Tool</h3>
+    <div class="rl-key-grid" style="margin-top: 0.75rem;">
+      <div class="rl-key">
+        <h4>Reduce purchase risk</h4>
+        <p>Liberal return policies reduce risk of buying products that may not sell — lowering switching costs for retailer-supplier change</p>
+      </div>
+      <div class="rl-key">
+        <h4>Competitive differentiation</h4>
+        <p>Liberal return policies due to competitive pressure. Taking back unwanted products builds customer loyalty and trust</p>
+      </div>
+      <div class="rl-key">
+        <h4>Good corporate citizenship</h4>
+        <p>Philanthropic use of reverse logistics enhances brand value and acts as a marketing incentive to purchase</p>
+      </div>
+      <div class="rl-key">
+        <h4>Clean channel strategy</h4>
+        <p>Clearing customer inventories so they can purchase more new goods. Fresher inventories command better prices, protecting margins</p>
+      </div>
+      <div class="rl-key">
+        <h4>Asset recovery</h4>
+        <p>Large portion of bottom-line profits from asset recovery programs — profiting from materials previously discarded</p>
+      </div>
+      <div class="rl-key">
+        <h4>Legal / regulatory compliance</h4>
+        <p>As landfill fees increase and disposal options decrease, legally managing non-salvageable materials becomes a strategic necessity</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>System Design Considerations (Key Management Elements)</h3>
+    <table style="margin-top: 0.5rem;">
+      <thead><tr><th>Element</th><th>Description</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Avoidance</strong></td><td>Minimize returns by improving quality; return agreements with retailers</td><td>Biscuit company monthly replacement agreements</td></tr>
+        <tr><td><strong>Gatekeeping</strong></td><td>Screening defective/unwarranted returns at the entry point</td><td>Nintendo: 80% drop in return rates via POS registration</td></tr>
+        <tr><td><strong>Compacting Disposition Time</strong></td><td>Pre-decide what to do with returns: repair, resell, recycle, or landfill</td><td>Laptop company: minor→repair, good→resell, major damage→recycle</td></tr>
+        <tr><td><strong>RL Information Systems</strong></td><td>Database tracking returns from store through supply chain. RF, RFID, 2D barcodes</td><td>Track return rates, recovery rates, returns inventory turnover</td></tr>
+        <tr><td><strong>Centralized Return Centers (CRC)</strong></td><td>Consistent disposition decisions, labor specialization, transportation savings</td><td>Faster credit/refund, better trend detection for quality issues</td></tr>
+        <tr><td><strong>Zero Returns</strong></td><td>No returns accepted; retailer given allowable return rate and disposition guidelines with discounts</td><td>Passes responsibility to retailer; manufacturer loses merchandise control</td></tr>
+        <tr><td><strong>Remanufacture & Refurbishment</strong></td><td>5 categories: repair, refurbish, remanufacture, cannibalize, recycle</td><td>Cost savings through reworked parts</td></tr>
+        <tr><td><strong>Asset Recovery</strong></td><td>Classification & disposition of returns/scrap/obsolete items to maximize return to owner</td><td>Selling goods that would otherwise go to landfill</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h3>Green Logistics vs Reverse Logistics</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 0.75rem;">
+      <div style="padding: 0.75rem; border-radius: 6px; border-left: 3px solid #1D9E75; border: 0.5px solid var(--color-border-tertiary);">
+        <p style="font-size: 12px; font-weight: 500;">Reverse Logistics</p>
+        <p style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">Moving goods from their typical disposal point back toward origin to <strong>recapture value</strong></p>
+      </div>
+      <div style="padding: 0.75rem; border-radius: 6px; border: 0.5px solid var(--color-border-tertiary);">
+        <p style="font-size: 12px; font-weight: 500;">Green Logistics</p>
+        <p style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">Minimizing the <strong>ecological impact</strong> of logistics activities — reducing energy use and material consumption in operations</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="section">
+  <div class="co-badge">CO3 — Self Assessment</div>
+  <h2>MCQ Quiz — Test Your Understanding</h2>
+  <p class="subtitle">Select the best answer for each question</p>
+  <div id="quiz-container"></div>
+  <button onclick="resetQuiz()" style="margin-top: 1rem; padding: 6px 16px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-primary); cursor: pointer;">Reset Quiz</button>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "Q1. Which inventory valuation method results in the LOWEST cost of goods sold during a period of RISING prices?",
+    opts: ["A) LIFO", "B) FIFO", "C) Weighted Average", "D) Specific Identification"],
+    ans: 1,
+    feedback: "FIFO — Older (cheaper) stock is sold first, resulting in lower COGS during inflation."
+  },
+  {
+    q: "Q2. Toyota's Kanban system is an example of which type of inventory control?",
+    opts: ["A) Push System", "B) Deterministic Model", "C) Pull System", "D) Single-Period Model"],
+    ans: 2,
+    feedback: "Pull System — Production is triggered by actual customer demand signals, not forecasts."
+  },
+  {
+    q: "Q3. Which formula correctly represents Pipeline Inventory?",
+    opts: ["A) Reorder Point × Safety Stock", "B) Average Demand × Lead Time", "C) EOQ ÷ Holding Cost", "D) Order Quantity × Ordering Cost"],
+    ans: 1,
+    feedback: "Average Demand × Lead Time — Stock in transit depends on how fast you sell and how long delivery takes."
+  },
+  {
+    q: "Q4. A bakery orders pastry ingredients every morning for same-day baking. Unsold goods are disposed of at night. Which model best describes this?",
+    opts: ["A) Multi-period model with fixed reorder point", "B) Single-period (Newsvendor) model", "C) JIT Pull model", "D) Probabilistic multi-period model"],
+    ans: 1,
+    feedback: "Single-Period Model — Order once, cannot reorder, and unsold inventory has little/no salvage value."
+  },
+  {
+    q: "Q5. Nintendo registered game players at point of sale to determine warranty eligibility for returns. This is an example of which reverse logistics element?",
+    opts: ["A) Asset Recovery", "B) Zero Returns Policy", "C) Gatekeeping", "D) Centralized Return Center"],
+    ans: 2,
+    feedback: "Gatekeeping — Screening defective and unwarranted returned merchandise at the entry point. Nintendo's system led to an 80% drop in return rates."
+  }
+];
+
+let answered = new Array(questions.length).fill(false);
+
+function buildQuiz() {
+  const c = document.getElementById('quiz-container');
+  c.innerHTML = '';
+  questions.forEach((q, qi) => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.id = 'q'+qi;
+    let html = `<p style="font-size:13px; font-weight:500; margin-bottom:0.75rem">${q.q}</p>`;
+    q.opts.forEach((opt, oi) => {
+      html += `<button class="quiz-btn" onclick="answer(${qi},${oi})">${opt}</button>`;
+    });
+    html += `<div class="quiz-feedback" id="fb${qi}"></div>`;
+    div.innerHTML = html;
+    c.appendChild(div);
+  });
+}
+
+function answer(qi, oi) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  const q = questions[qi];
+  const card = document.getElementById('q'+qi);
+  const btns = card.querySelectorAll('.quiz-btn');
+  btns.forEach((b, i) => {
+    if (i === q.ans) b.classList.add('correct');
+    else if (i === oi) b.classList.add('wrong');
+    b.disabled = true;
+  });
+  const fb = document.getElementById('fb'+qi);
+  fb.textContent = (oi === q.ans ? '✓ Correct! ' : '✗ Incorrect. ') + q.feedback;
+  fb.className = 'quiz-feedback show ' + (oi === q.ans ? 'ok' : 'no');
+}
+
+function resetQuiz() {
+  answered = new Array(questions.length).fill(false);
+  buildQuiz();
+}
+
+buildQuiz();
+
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function showMethod(id) {
+  document.querySelectorAll('.method-content').forEach(m => m.classList.remove('active'));
+  document.querySelectorAll('.method-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function calcEOQ() {
+  const D = parseFloat(document.getElementById('eoq-d').value);
+  const S = parseFloat(document.getElementById('eoq-s').value);
+  const H = parseFloat(document.getElementById('eoq-h').value);
+  if (!D || !S || !H) return;
+  const eoq = Math.round(Math.sqrt(2*D*S/H));
+  const orders = Math.round(D/eoq);
+  const holdingCost = Math.round((eoq/2)*H);
+  const orderingCost = Math.round(orders*S);
+  const total = holdingCost + orderingCost;
+  const result = document.getElementById('eoq-result');
+  result.style.display = 'block';
+  result.innerHTML = `
+    <p style="font-size:14px; font-weight:500; color:var(--color-text-info)">EOQ = ${eoq} units</p>
+    <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:8px; margin-top:0.5rem">
+      <div><div style="font-size:11px; color:var(--color-text-secondary)">Orders/year</div><div style="font-weight:500">${orders}</div></div>
+      <div><div style="font-size:11px; color:var(--color-text-secondary)">Annual Holding Cost</div><div style="font-weight:500">₹${holdingCost.toLocaleString()}</div></div>
+      <div><div style="font-size:11px; color:var(--color-text-secondary)">Annual Total Cost</div><div style="font-weight:500">₹${total.toLocaleString()}</div></div>
+    </div>`;
+}
+
+function calcPipeline() {
+  const D = parseFloat(document.getElementById('pipe-d').value)||0;
+  const L = parseFloat(document.getElementById('pipe-l').value)||0;
+  const val = Math.round(D * L);
+  document.getElementById('pipe-val').textContent = val.toLocaleString() + ' units';
+}
+</script>
